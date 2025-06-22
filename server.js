@@ -1,45 +1,48 @@
 require('dotenv').config();
 const express = require('express');
-const { Pool } = require('pg');
-const path = require('path');
+const {
+    Pool
+} = require('pg');
 const app = express();
 
 app.use(express.static('public'));
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 app.get('/data', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM raudhatul_table1');
-    const rows = result.rows;
+    try {
+        const result = await pool.query('SELECT * FROM raudhatul_table1');
+        const rows = result.rows;
 
-    const dataMap = {};
-    rows.forEach(row => {
-      dataMap[row.id] = row.value;
-    });
+        const dataMap = {};
+        rows.forEach(row => {
+            dataMap[row.id] = Number(row.value); 
+        });
 
-    const table2 = {
-      alpha: dataMap["A5"] + dataMap["A20"],
-      beta: Math.floor(dataMap["A15"] / dataMap["A7"]),
-      charlie: dataMap["A13"] * dataMap["A12"]
-    };
+        const table2 = {
+            alpha: dataMap["A5"] + dataMap["A20"],
+            beta: Math.floor(dataMap["A15"] / dataMap["A7"]),
+            charlie: dataMap["A13"] * dataMap["A12"]
+        };
 
-    res.json({
-      table1: rows,
-      table2
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Database error");
-  }
+
+
+        res.json({
+            table1: rows,
+            table2
+        });
+    } catch (err) {
+        console.error("Database error:", err);
+        res.status(500).send("Database error");
+    }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Server running at http://localhost:${PORT}`);
 });
