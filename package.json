@@ -1,0 +1,17 @@
+{
+    "name": "heroku-table-app",
+    "version": "1.0.0",
+    "description": "Table project for Heroku",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.21.2",
+        "pg": "^8.16.2"
+    },
+    "engines": {
+        "node": ">=14"
+    },
+    "license": "MIT"
+}
